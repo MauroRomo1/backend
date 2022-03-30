@@ -2,12 +2,13 @@ const { response, request } = require("express");
 
 const usuariosGet = (req = request, res = response) => {
   //   const query = req.query;
-  const { nombre, apikey, limit } = req.query;
+  const { nombre = "no name", apikey, limit = 5, page = 1 } = req.query;
   res.json({
-    msg: "Hola wacho, todo piola",
+    msg: "Bienvenido wacho, todo piola?",
     nombre,
     apikey,
     limit,
+    page,
   });
 };
 
