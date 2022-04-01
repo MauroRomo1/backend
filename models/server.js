@@ -38,29 +38,6 @@ class Server {
   // Rutas
   routes() {
     this.app.use(this.usuariosPath, require("../routes/usuarios"));
-    // this.app.get("/api", (req, res) => {
-    //   res.json({
-    //     msg: "Hola wacho, todo piola",
-    //   });
-    // });
-
-    // this.app.post("/api", (req, res) => {
-    //   res.json({
-    //     msg: "POST - Info creada",
-    //   });
-    // });
-
-    // this.app.put("/api", (req, res) => {
-    //   res.json({
-    //     msg: "PUT- Info actualizada",
-    //   });
-    // });
-
-    // this.app.delete("/api", (req, res) => {
-    //   res.json({
-    //     msg: "DELETE - Info eliminada",
-    //   });
-    // });
   }
 
   listen() {
