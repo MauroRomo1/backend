@@ -1,51 +1,41 @@
 const { response, request } = require("express");
 
-// const { validationResult } = require("express-validator");
-
-// importamos modelo de usuario
+//importar modelo de usuario
 const Usuario = require("../models/usuario");
 
-// importamos  bcryptjs
+//Importar bcryptjs
 const bcryptjs = require("bcryptjs");
 
-const usuariosGet = (req = request, res = response) => {
+const usuariosGet = async (req = request, res = response) => {
   //   const query = req.query;
-  const { nombre = "no name", apikey, limit = 5, page = 1 } = req.query;
+  const { limite = 5, desde = 0 } = req.query;
+
+  // const usuarios = await Usuario.find().skip(desde).limit(limite);
+  // const total = await Usuario.countDocuments();
+
+  const [total, usuarios] = await Promise.all([
+    Usuario.countDocuments(),
+    Usuario.find().skip(Number(desde)).limit(Number(limite)),
+  ]);
+
   res.json({
-    msg: "Bienvenido wacho, todo piola?",
-    nombre,
-    apikey,
-    limit,
-    page,
+    total,
+    usuarios,
   });
 };
 
-const usuariosPost = async (req = request, res = response) => {
-  // Recibir la repuesta de check
-  // const errors = validationResult(req);
-  // if (!errors.isEmpty()) {
-  //   return res.status(400).json(errors);
-  // }
-
+const usuarioPost = async (req = request, res) => {
   const datos = req.body;
 
   const { nombre, correo, password, rol } = datos;
 
   const usuario = new Usuario({ nombre, correo, password, rol });
 
-  //Verificar el correo
-  const existeEmail = await Usuario.findOne({ correo });
-  if (existeEmail) {
-    return res.status(400).json({
-      msg: "El correo ya existe",
-    });
-  }
-
   //Encriptar la contraseña
   const salt = bcryptjs.genSaltSync();
   usuario.password = bcryptjs.hashSync(password, salt);
 
-  //Guardar los datos en la BD
+  //Guardar los datos en BD
   await usuario.save();
 
   res.json({
@@ -53,22 +43,36 @@ const usuariosPost = async (req = request, res = response) => {
   });
 };
 
-const usuariosPut = (req = request, res = response) => {
-  const id = req.params.id;
+const usuarioPut = async (req = request, res) => {
+  const { id } = req.params;
+  const { password, correo, google, ...resto } = req.body;
+
+  //validar password contra la base de datos
+  if (password) {
+    //Encriptar la contraseña
+    const salt = bcryptjs.genSaltSync();
+    resto.password = bcryptjs.hashSync(password, salt);
+  }
+
+  //actualizo los datos
+  const usuario = await Usuario.findByIdAndUpdate(id, resto, { new: true });
 
   res.json({
-    msg: "PUT- Info actualizada",
-    id,
+    usuario,
   });
 };
 
-const usuariosDelete = (req = request, res = response) => {
+const usuarioDelete = (req, res) => {
   const id = req.params.id;
-
   res.json({
     msg: "DELETE - Info eliminada",
     id,
   });
 };
 
-module.exports = { usuariosGet, usuariosPost, usuariosDelete, usuariosPut };
+module.exports = {
+  usuariosGet,
+  usuarioPost,
+  usuarioPut,
+  usuarioDelete,
+};
