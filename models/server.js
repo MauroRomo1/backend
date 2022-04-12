@@ -1,5 +1,5 @@
 const express = require("express");
-const { dbConnection } = require("../database/config"); //Importando la conf de la conexion con la BD
+const { dbConnection } = require("../database/config"); //importando la conf de la conexión con la BD
 const cors = require("cors");
 
 class Server {
@@ -8,38 +8,41 @@ class Server {
     this.port = process.env.PORT;
     this.authPath = "/api/auth";
     this.usuariosPath = "/api/usuarios";
+    this.categoriasPath = "/api/categorias";
 
-    // concectar BD
+    //conectar BD
     this.conectarDB();
 
-    //   middLewares
+    //middlewares
     this.middlewares();
 
-    // Rutas
+    //Rutas
     this.routes();
   }
 
-  // llamando la funcion para conectar la base de datos
+  //llamando función para conectar base de datos
   async conectarDB() {
     await dbConnection();
   }
 
-  //   middLewares
+  //middlewares
+
   middlewares() {
-    // CORS
+    //CORS
     this.app.use(cors());
 
-    // Lectura y parseo del body
+    //lectura y parseo del body
     this.app.use(express.json());
 
-    // directorio publico
+    //directorio público
     this.app.use(express.static("public"));
   }
 
-  // Rutas
+  //Rutas
   routes() {
     this.app.use(this.authPath, require("../routes/auth"));
     this.app.use(this.usuariosPath, require("../routes/usuarios"));
+    this.app.use(this.categoriasPath, require("../routes/categorias"));
   }
 
   listen() {
@@ -48,4 +51,5 @@ class Server {
     });
   }
 }
+
 module.exports = Server;
