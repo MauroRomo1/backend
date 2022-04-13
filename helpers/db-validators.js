@@ -26,9 +26,11 @@ const usuarioExiste = async (id) => {
 const categoriaExiste = async (id) => {
   const existeCategoria = await Categoria.findById(id);
   if (!existeCategoria) {
-    throw new Error(`No existe una categoria con el id ${id}`);
+    throw new Error(`No existe una categoría con el id ${id}`);
   }
 };
+
+//Validar producto por id 🤔
 
 module.exports = {
   esRoleValido,
