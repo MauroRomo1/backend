@@ -4,7 +4,10 @@ const { check } = require("express-validator");
 const { validarJWT } = require("../middlewares/validar-jwt");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { tieneRole } = require("../middlewares/validar-roles");
+<<<<<<< HEAD
 const { productoExiste } = require("../helpers/db-validators");
+=======
+>>>>>>> parent of f8aa1a3 (CRUD de productos y busqueda flexible)
 //productoExiste
 
 const {
@@ -13,7 +16,7 @@ const {
   actualizarProducto,
   borrarProducto,
   obtenerProducto,
-} = require("../controllers/producto");
+} = require("../controllers/productos");
 
 const router = Router();
 
@@ -42,7 +45,6 @@ router.put(
   "/:id",
   [
     validarJWT,
-    tieneRole("ADMIN_ROLE", "VENTAS_ROLE"),
     check("id", "No es un Id válido").isMongoId(),
     check("id").custom(productoExiste), //me aseguro si existe un producto con ese ID 🤔
 

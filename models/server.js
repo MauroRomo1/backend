@@ -12,10 +12,6 @@ class Server {
     this.authPath = "/api/auth";
     this.usuariosPath = "/api/usuarios";
     this.categoriasPath = "/api/categorias";
-    this.productosPath = "/api/productos";
-    this.buscarPath = "/api/buscar";
-    this.uploadsPath = "/api/uploads";
-
     //Path de productos 🤔
 
     //conectar BD
@@ -60,9 +56,7 @@ class Server {
     this.app.use(this.authPath, require("../routes/auth"));
     this.app.use(this.usuariosPath, require("../routes/usuarios"));
     this.app.use(this.categoriasPath, require("../routes/categorias"));
-    this.app.use(this.productosPath, require("../routes/producto"));
-    this.app.use(this.buscarPath, require("../routes/buscar"));
-    this.app.use(this.uploadsPath, require("../routes/uploads"));
+    //ruta de productos 🤔
   }
 
   listen() {

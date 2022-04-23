@@ -1,18 +1,13 @@
 const { response, request } = require("express");
-const Producto = require("../models/producto");
+const { Producto } = require("../models");
 
-//Get para traer todos los productos paginados--------------------
 const obtenerProductos = async (req = request, res = response) => {
   const { limite = 5, desde = 0 } = req.query;
   const query = { estado: true };
 
   const [total, productos] = await Promise.all([
     Producto.countDocuments(query),
-    Producto.find(query)
-      .skip(Number(desde))
-      .limit(Number(limite))
-      .populate("categoria", "nombre")
-      .populate("usuario", "nombre"),
+    Producto.find(query).skip(Number(desde)).limit(Number(limite)),
     //Como traigo los datos de los usuarios y las categorias?🤔
   ]);
 
@@ -22,14 +17,10 @@ const obtenerProductos = async (req = request, res = response) => {
   });
 };
 
-//--------------------------------------------------------------
-//obtener un producto por su ID
 const obtenerProducto = async (req = request, res = response) => {
-  const { id } = req.params;
+  const id = req.params.id;
 
-  const producto = await Producto.findById(id)
-    .populate("categoria", "nombre")
-    .populate("usuario", "nombre");
+  const producto = await Producto.findById(id);
   //Como traigo los datos de los usuarios y las categorias?🤔
 
   res.json({
@@ -39,16 +30,17 @@ const obtenerProducto = async (req = request, res = response) => {
 
 //Crear Producto--------------------------------------
 const crearProducto = async (req, res = response) => {
-  const { precio, categoria, descripcion } = req.body;
-  const nombre = req.body.nombre.toUpperCase();
+  const { nombre, precio, categoria, descripcion } = req.body;
+
   const productoDB = await Producto.findOne({ nombre });
 
   if (productoDB) {
-    return res.status(400).json({
+    res.status(400).json({
       msg: `El producto ${productoDB.nombre} ya existe`,
     });
   }
   //Generar la data a guardar
+
   const data = {
     nombre,
     categoria,
@@ -69,20 +61,16 @@ const crearProducto = async (req, res = response) => {
 
 const actualizarProducto = async (req, res) => {
   const { id } = req.params;
-  const { precio, categoria, descripcion, disponible } = req.body;
-
+  const { nombre, precio, categoria, descripcion, disponible } = req.body;
   const usuario = req.usuario._id;
-  let data = {
+  const data = {
+    nombre,
     precio,
     descripcion,
     categoria,
     disponible,
     usuario,
   };
-
-  if (req.body.nombre) {
-    data.nombre = req.body.nombre.toUpperCase();
-  }
 
   const producto = await Producto.findByIdAndUpdate(id, data, { new: true });
 
