@@ -1,66 +1,65 @@
 const { Router } = require("express");
-
 const { check } = require("express-validator");
-const { validarJWT } = require("../middlewares/validar-jwt");
+
 const { validarCampos } = require("../middlewares/validar-campos");
+const { validarJWT } = require("../middlewares/validar-jwt");
 const { tieneRole } = require("../middlewares/validar-roles");
-const { productoExiste } = require("../helpers/db-validators");
-//productoExiste
 
 const {
-  obtenerProductos,
-  crearProducto,
-  actualizarProducto,
-  borrarProducto,
-  obtenerProducto,
-} = require("../controllers/producto");
+  esRoleValido,
+  emailExiste,
+  usuarioExiste,
+} = require("../helpers/db-validators");
+
+const {
+  usuariosGet,
+  usuarioPost,
+  usuarioPut,
+  usuarioDelete,
+} = require("../controllers/usuarios");
 
 const router = Router();
 
-router.get("/", obtenerProductos);
-
-router.get(
-  "/:id",
-  [
-    check("id", "El id no es válido").isMongoId(),
-    check("id").custom(productoExiste), //me aseguro si existe un producto con ese ID 🤔
-    validarCampos,
-  ],
-  obtenerProducto
-);
+router.get("/", usuariosGet);
 
 router.post(
   "/",
   [
-    validarJWT,
     check("nombre", "El nombre es obligatorio").not().isEmpty(),
+    check(
+      "password",
+      "La contraseña debe tener como mínimo 6 caracteres"
+    ).isLength({ min: 6 }),
+    check("correo", "No es un correo válido").isEmail(),
+    check("correo").custom(emailExiste),
+    check("rol").custom(esRoleValido),
     validarCampos,
   ],
-  crearProducto
+  usuarioPost
 );
+
 router.put(
   "/:id",
   [
     validarJWT,
-    tieneRole("ADMIN_ROLE", "VENTAS_ROLE"),
-    check("id", "No es un Id válido").isMongoId(),
-    check("id").custom(productoExiste), //me aseguro si existe un producto con ese ID 🤔
-
+    check("id", "No es un ID válido").isMongoId(),
+    check("id").custom(usuarioExiste),
+    check("rol").custom(esRoleValido),
     validarCampos,
   ],
-  actualizarProducto
+  usuarioPut
 );
 
 router.delete(
   "/:id",
   [
     validarJWT,
-    tieneRole("ADMIN_ROLE", "VENTAS_ROLE"),
-    check("id", "No es un Id válido").isMongoId(),
-    check("id").custom(productoExiste), //me aseguro si existe un producto con ese ID 🤔
+    tieneRole("ADMIN_ROLE", "VENTA_ROLE"),
+    check("id", "No es un ID válido").isMongoId(),
+    check("id").custom(usuarioExiste),
     validarCampos,
   ],
-  borrarProducto
+  usuarioDelete
 );
 
 module.exports = router;

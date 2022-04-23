@@ -1,14 +1,11 @@
 const { Router } = require("express");
 
 const { check } = require("express-validator");
+
 const { validarJWT } = require("../middlewares/validar-jwt");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { tieneRole } = require("../middlewares/validar-roles");
-<<<<<<< HEAD
 const { productoExiste } = require("../helpers/db-validators");
-=======
->>>>>>> parent of f8aa1a3 (CRUD de productos y busqueda flexible)
-//productoExiste
 
 const {
   obtenerProductos,
@@ -16,7 +13,7 @@ const {
   actualizarProducto,
   borrarProducto,
   obtenerProducto,
-} = require("../controllers/productos");
+} = require("../controllers/producto");
 
 const router = Router();
 
@@ -26,7 +23,7 @@ router.get(
   "/:id",
   [
     check("id", "El id no es válido").isMongoId(),
-    check("id").custom(productoExiste), //me aseguro si existe un producto con ese ID 🤔
+    check("id").custom(productoExiste), //me aseguro si existe un producto con ese ID
     validarCampos,
   ],
   obtenerProducto
@@ -45,8 +42,9 @@ router.put(
   "/:id",
   [
     validarJWT,
+    tieneRole("ADMIN_ROLE", "VENTAS_ROLE"),
     check("id", "No es un Id válido").isMongoId(),
-    check("id").custom(productoExiste), //me aseguro si existe un producto con ese ID 🤔
+    check("id").custom(productoExiste), //me aseguro si existe un producto con ese ID
 
     validarCampos,
   ],
@@ -59,7 +57,7 @@ router.delete(
     validarJWT,
     tieneRole("ADMIN_ROLE", "VENTAS_ROLE"),
     check("id", "No es un Id válido").isMongoId(),
-    check("id").custom(productoExiste), //me aseguro si existe un producto con ese ID 🤔
+    check("id").custom(productoExiste), //me aseguro si existe un producto con ese ID
     validarCampos,
   ],
   borrarProducto
