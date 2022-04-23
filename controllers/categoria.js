@@ -65,7 +65,6 @@ const crearCategoria = async (req, res = response) => {
 //Actualizar la categoria, validar el nombre
 const actualizarCategoria = async (req, res) => {
   const { id } = req.params;
-
   const nombre = req.body.nombre.toUpperCase();
   const usuario = req.usuario._id;
 

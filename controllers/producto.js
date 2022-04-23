@@ -1,19 +1,19 @@
 const { response, request } = require("express");
 const Producto = require("../models/producto");
 
-//Get para traer todos los productos paginados
+//Get para traer todos los productos paginados--------------------
 const obtenerProductos = async (req = request, res = response) => {
   const { limite = 5, desde = 0 } = req.query;
   const query = { estado: true };
 
   const [total, productos] = await Promise.all([
     Producto.countDocuments(query),
-    // Datos de los usuarios y las categorias
     Producto.find(query)
       .skip(Number(desde))
       .limit(Number(limite))
       .populate("categoria", "nombre")
       .populate("usuario", "nombre"),
+    //Como traigo los datos de los usuarios y las categorias?🤔
   ]);
 
   res.json({
@@ -23,15 +23,14 @@ const obtenerProductos = async (req = request, res = response) => {
 };
 
 //--------------------------------------------------------------
-
 //obtener un producto por su ID
 const obtenerProducto = async (req = request, res = response) => {
   const { id } = req.params;
 
   const producto = await Producto.findById(id)
-    //Datos de los usuarios y las categorias
     .populate("categoria", "nombre")
     .populate("usuario", "nombre");
+  //Como traigo los datos de los usuarios y las categorias?🤔
 
   res.json({
     producto,
@@ -49,7 +48,6 @@ const crearProducto = async (req, res = response) => {
       msg: `El producto ${productoDB.nombre} ya existe`,
     });
   }
-
   //Generar la data a guardar
   const data = {
     nombre,

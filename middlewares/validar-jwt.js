@@ -1,6 +1,5 @@
 const { response } = require("express");
 const jwt = require("jsonwebtoken");
-
 const Usuario = require("../models/usuario");
 
 const validarJWT = async (req, res = response, next) => {
@@ -25,6 +24,7 @@ const validarJWT = async (req, res = response, next) => {
     }
 
     //el usuario esta inactivo
+
     if (!usuarioAutenticado.estado) {
       return res.status(401).json({
         msg: "Token no válido - Usuario inactivo",

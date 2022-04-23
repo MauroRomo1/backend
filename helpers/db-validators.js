@@ -31,12 +31,25 @@ const categoriaExiste = async (id) => {
   }
 };
 
-//Validar producto por id
+//Validar producto por id 🤔
 const productoExiste = async (id) => {
   const existeProducto = await Producto.findById(id);
   if (!existeProducto) {
     throw new Error(`No existe un producto con el id ${id}`);
   }
+};
+
+//Validar colecciones permitidas
+const coleccionesPermitidas = (coleccion = "", colecciones = []) => {
+  const incluida = colecciones.includes(coleccion);
+
+  if (!incluida) {
+    throw new Error(
+      `La colección ${coleccion} no es permitida, las colecciones permitidas son: ${colecciones}`
+    );
+  }
+
+  return true;
 };
 
 module.exports = {
@@ -45,4 +58,5 @@ module.exports = {
   usuarioExiste,
   categoriaExiste,
   productoExiste,
+  coleccionesPermitidas,
 };

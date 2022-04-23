@@ -40,7 +40,7 @@ const buscarCategorias = async (termino = "", res = response) => {
     });
   }
 
-  //Buscar por nombre
+  //por nombre
   const regex = new RegExp(termino, "i");
 
   const categorias = await Categoria.find({ nombre: regex, estado: true });
@@ -60,7 +60,7 @@ const buscarProductos = async (termino = "", res = response) => {
     });
   }
 
-  //Buscar por nombre
+  //por nombre
   const regex = new RegExp(termino, "i");
 
   const productos = await Producto.find({
