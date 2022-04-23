@@ -4,4 +4,4 @@ const router = Router();
 
 router.get("/:coleccion/:termino", buscar);
 
-module.exports = router();
+module.exports = router;
